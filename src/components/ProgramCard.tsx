@@ -1,67 +1,95 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
+import Icon from "@/components/ui/icon";
 
-interface ProgramCardProps {
-  id: string;
+interface Program {
+  id: number;
   name: string;
-  machines: string[];
-  previewImage?: string;
-  description?: string;
+  description: string;
+  machineType: string;
+  status: string;
+  createdDate: string;
+  author: string;
 }
 
-const ProgramCard = ({
-  id,
-  name,
-  machines,
-  previewImage,
-  description,
-}: ProgramCardProps) => {
-  const navigate = useNavigate();
+interface ProgramCardProps {
+  program: Program;
+}
 
-  const handleClick = () => {
-    navigate(`/program/${id}`);
-  };
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case "active":
+      return "bg-green-100 text-green-800";
+    case "testing":
+      return "bg-yellow-100 text-yellow-800";
+    case "archived":
+      return "bg-gray-100 text-gray-800";
+    default:
+      return "bg-blue-100 text-blue-800";
+  }
+};
 
+const getStatusText = (status: string) => {
+  switch (status) {
+    case "active":
+      return "Активная";
+    case "testing":
+      return "Тестирование";
+    case "archived":
+      return "Архивная";
+    default:
+      return status;
+  }
+};
+
+const getMachineTypeIcon = (type: string) => {
+  switch (type) {
+    case "mill":
+      return "Cog";
+    case "lathe":
+      return "Circle";
+    case "plasma":
+      return "Zap";
+    case "laser":
+      return "Lightbulb";
+    default:
+      return "Wrench";
+  }
+};
+
+export default function ProgramCard({ program }: ProgramCardProps) {
   return (
-    <Card
-      className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105 bg-white border-gray-200"
-      onClick={handleClick}
-    >
+    <Card className="hover:shadow-md transition-shadow duration-200">
       <CardHeader className="pb-3">
-        <div className="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center mb-3">
-          {previewImage ? (
-            <img
-              src={previewImage}
-              alt={`Превью программы ${name}`}
-              className="w-full h-full object-cover rounded-lg"
+        <div className="flex items-start justify-between">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Icon
+              name={getMachineTypeIcon(program.machineType)}
+              size={20}
+              className="text-blue-600"
             />
-          ) : (
-            <div className="text-gray-400 text-sm">Превью программы</div>
-          )}
+            {program.name}
+          </CardTitle>
+          <Badge className={getStatusColor(program.status)}>
+            {getStatusText(program.status)}
+          </Badge>
         </div>
-        <CardTitle className="text-lg font-semibold text-gray-900">
-          {name}
-        </CardTitle>
       </CardHeader>
+
       <CardContent>
-        {description && (
-          <p className="text-sm text-gray-600 mb-3">{description}</p>
-        )}
-        <div className="flex flex-wrap gap-1">
-          {machines.map((machine) => (
-            <Badge
-              key={machine}
-              variant="secondary"
-              className="text-xs bg-blue-100 text-blue-800"
-            >
-              {machine}
-            </Badge>
-          ))}
+        <p className="text-gray-600 mb-4">{program.description}</p>
+
+        <div className="flex items-center justify-between text-sm text-gray-500">
+          <div className="flex items-center gap-1">
+            <Icon name="User" size={14} />
+            {program.author}
+          </div>
+          <div className="flex items-center gap-1">
+            <Icon name="Calendar" size={14} />
+            {program.createdDate}
+          </div>
         </div>
       </CardContent>
     </Card>
   );
-};
-
-export default ProgramCard;
+}

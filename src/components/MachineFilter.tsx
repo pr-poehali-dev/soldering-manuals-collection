@@ -9,56 +9,66 @@ import {
 import Icon from "@/components/ui/icon";
 
 interface MachineFilterProps {
-  selectedMachine: string;
-  onMachineChange: (machine: string) => void;
-  availableMachines: string[];
+  selectedType: string;
+  selectedStatus: string;
+  onTypeChange: (value: string) => void;
+  onStatusChange: (value: string) => void;
+  onReset: () => void;
 }
 
-const MachineFilter = ({
-  selectedMachine,
-  onMachineChange,
-  availableMachines,
-}: MachineFilterProps) => {
-  const handleClearFilter = () => {
-    onMachineChange("");
-  };
-
+export default function MachineFilter({
+  selectedType,
+  selectedStatus,
+  onTypeChange,
+  onStatusChange,
+  onReset,
+}: MachineFilterProps) {
   return (
-    <div className="flex items-center gap-3 mb-6">
-      <div className="flex items-center gap-2">
-        <Icon name="Filter" size={20} className="text-gray-600" />
-        <span className="text-sm font-medium text-gray-700">
-          Фильтр по станкам:
-        </span>
+    <div className="bg-white p-6 rounded-lg shadow-sm border mb-8">
+      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+        <Icon name="Filter" size={20} />
+        Фильтры
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-2">Тип станка</label>
+          <Select value={selectedType} onValueChange={onTypeChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Все типы" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Все типы</SelectItem>
+              <SelectItem value="mill">Фрезерный</SelectItem>
+              <SelectItem value="lathe">Токарный</SelectItem>
+              <SelectItem value="plasma">Плазменный</SelectItem>
+              <SelectItem value="laser">Лазерный</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Статус</label>
+          <Select value={selectedStatus} onValueChange={onStatusChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Все статусы" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Все статусы</SelectItem>
+              <SelectItem value="active">Активные</SelectItem>
+              <SelectItem value="testing">На тестировании</SelectItem>
+              <SelectItem value="archived">Архивные</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex items-end">
+          <Button variant="outline" onClick={onReset} className="w-full">
+            <Icon name="X" size={16} />
+            Сбросить
+          </Button>
+        </div>
       </div>
-
-      <Select value={selectedMachine} onValueChange={onMachineChange}>
-        <SelectTrigger className="w-48">
-          <SelectValue placeholder="Все станки" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="">Все станки</SelectItem>
-          {availableMachines.map((machine) => (
-            <SelectItem key={machine} value={machine}>
-              {machine}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      {selectedMachine && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleClearFilter}
-          className="text-gray-600 hover:text-gray-900"
-        >
-          <Icon name="X" size={16} className="mr-1" />
-          Сброс
-        </Button>
-      )}
     </div>
   );
-};
-
-export default MachineFilter;
+}
