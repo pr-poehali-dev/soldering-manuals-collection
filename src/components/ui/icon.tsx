@@ -1,16 +1,27 @@
-import { icons } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 
 interface IconProps {
-  name: keyof typeof icons;
+  name: keyof typeof LucideIcons;
   size?: number;
   color?: string;
   className?: string;
-  fallback?: keyof typeof icons;
+  fallback?: keyof typeof LucideIcons;
 }
 
 const Icon = ({ name, size = 24, color, className, fallback }: IconProps) => {
   const LucideIcon =
-    icons[name] || (fallback ? icons[fallback] : icons.AlertCircle);
+    LucideIcons[name] ||
+    (fallback ? LucideIcons[fallback] : LucideIcons.AlertCircle);
+
+  if (!LucideIcon) {
+    return (
+      <LucideIcons.AlertCircle
+        size={size}
+        color={color}
+        className={className}
+      />
+    );
+  }
 
   return <LucideIcon size={size} color={color} className={className} />;
 };
